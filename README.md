@@ -1,1 +1,1 @@
-# FunFatFish
+This is a experminental site for people to show my html skills for classs and home, how i towrks is for 1 dollar you get the basic package which is 3 games/Resources of your choice: Vip is 5 dollars where you get all the resources and games available with constant updates and new sites.
