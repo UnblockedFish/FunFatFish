@@ -72,43 +72,13 @@ footer{background:var(--card);border-top:1px solid rgba(0,245,255,.08);padding:4
       <div class="logo-text">KMS GAMES</div>
       <div class="logo-sub">// ACCESS REQUIRED //</div>
     </div>
-    <div class="auth-tabs">
-      <button class="auth-tab active" onclick="switchLoginMode('signup',this)">CREATE ACCOUNT</button>
-      <button class="auth-tab" onclick="switchLoginMode('login',this)">SIGN IN</button>
-    </div>
     <div class="auth-error" id="auth-error"></div>
-    <form id="signup-form" class="auth-form active" onsubmit="handleSignup(event)">
-      <div class="form-group">
-        <label class="form-label">// USERNAME <span class="req">*</span></label>
-        <input type="text" id="su-username" class="form-input" placeholder="choose a username" autocomplete="username" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label">// EMAIL <span class="req">*</span></label>
-        <input type="email" id="su-email" class="form-input" placeholder="your@email.com" autocomplete="email" required>
-      </div>
+    <form onsubmit="handleSimpleLogin(event)">
       <div class="form-group">
         <label class="form-label">// PASSWORD <span class="req">*</span></label>
-        <input type="password" id="su-password" class="form-input" placeholder="minimum 8 characters" autocomplete="new-password" required>
+        <input type="password" id="simple-pw" class="form-input" placeholder="enter password" autocomplete="current-password" required autofocus>
       </div>
-      <div class="form-group">
-        <label class="form-label" style="color:rgba(191,0,255,.85)">// ACCESS CODE <span class="req">*</span></label>
-        <input type="text" id="su-token" class="form-input tok-input" placeholder="enter your one-time access code" autocomplete="off" required>
-        <div class="tok-hint">⬡ Each code is locked to one email. Contact admin for your code.</div>
-      </div>
-      <button type="submit" class="submit-btn">REGISTER &amp; ENTER →</button>
-      <div class="auth-notice">Already registered? Use the SIGN IN tab above.</div>
-    </form>
-    <form id="signin-form" class="auth-form" onsubmit="handleSignin(event)" style="display:none">
-      <div class="form-group">
-        <label class="form-label">// USERNAME OR EMAIL <span class="req">*</span></label>
-        <input type="text" id="si-ident" class="form-input" placeholder="username or email" autocomplete="username" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label">// PASSWORD <span class="req">*</span></label>
-        <input type="password" id="si-password" class="form-input" placeholder="your password" autocomplete="current-password" required>
-      </div>
-      <button type="submit" class="submit-btn">SIGN IN →</button>
-      <div class="auth-notice">Don't have an account? Get an access code from admin and register above.</div>
+      <button type="submit" class="submit-btn">ENTER →</button>
     </form>
   </div>
 </div>
@@ -415,7 +385,17 @@ function switchLoginMode(m,el){
   document.getElementById('auth-error').className='auth-error';
 }
 
-/* ── SIGN UP ── */
+/* ── SIMPLE PASSWORD LOGIN ── */
+function handleSimpleLogin(e){
+  e.preventDefault();
+  var pw=document.getElementById('simple-pw').value;
+  if(pw==='19641964'){
+    localStorage.setItem(SK,JSON.stringify({username:'thek3rmitx',email:'drakecasey2013@gmail.com',tier:'admin'}));
+    revealSite('thek3rmitx','admin');
+  } else {
+    authErr('Wrong password');
+  }
+}
 async function handleSignup(e){
   e.preventDefault();
   var u=document.getElementById('su-username').value.trim();
