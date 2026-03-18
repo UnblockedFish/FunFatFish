@@ -474,18 +474,18 @@ function handleSignin(e){
   e.preventDefault();
   var id=document.getElementById('si-ident').value.trim().toLowerCase();
   var p=document.getElementById('si-password').value;
+  /* Hardcoded admin bypass — always works regardless of localStorage */
+  if((id==='thek3rmitx'||id==='drakecasey2013@gmail.com')&&p==='Goldinger1964'){
+    localStorage.setItem(SK,JSON.stringify({username:'thek3rmitx',email:'drakecasey2013@gmail.com',tier:'admin'}));
+    revealSite('thek3rmitx','admin');return;
+  }
   var users=getUsers();
-  /* Try exact username match, then lowercase, then email */
   var found=users[id]
     ||users[id.toLowerCase()]
     ||Object.values(users).find(function(x){return x.username.toLowerCase()===id;})
     ||Object.values(users).find(function(x){return x.email===id;})
     ||null;
-  var inputHash=hp(p);
-  if(!found||found.passwordHash!==inputHash){
-    authErr('Invalid username/email or password');
-    return;
-  }
+  if(!found||found.passwordHash!==hp(p)){authErr('Invalid username/email or password');return;}
   localStorage.setItem(SK,JSON.stringify({username:found.username,email:found.email,tier:found.tier}));
   if(found.tier==='basic'){
     var picks=getPicks(found.username);
