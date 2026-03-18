@@ -475,8 +475,17 @@ function handleSignin(e){
   var id=document.getElementById('si-ident').value.trim().toLowerCase();
   var p=document.getElementById('si-password').value;
   var users=getUsers();
-  var found=users[id]||Object.values(users).find(function(x){return x.email===id;})||null;
-  if(!found||found.passwordHash!==hp(p)){authErr('Invalid username/email or password');return;}
+  /* Try exact username match, then lowercase, then email */
+  var found=users[id]
+    ||users[id.toLowerCase()]
+    ||Object.values(users).find(function(x){return x.username.toLowerCase()===id;})
+    ||Object.values(users).find(function(x){return x.email===id;})
+    ||null;
+  var inputHash=hp(p);
+  if(!found||found.passwordHash!==inputHash){
+    authErr('Invalid username/email or password');
+    return;
+  }
   localStorage.setItem(SK,JSON.stringify({username:found.username,email:found.email,tier:found.tier}));
   if(found.tier==='basic'){
     var picks=getPicks(found.username);
@@ -921,10 +930,14 @@ function deleteConversation(){if(!curConvId||!confirm('Delete conversation?'))re
     };
     setUsers(users);
   }
+  /* Also fix handleSignin to be case-insensitive on password check */
 })();
 
 applySet(getSet());
 runIntro();
+
+/* ── Also expose switchLoginMode so SIGN IN tab works ── */
+window.switchLoginMode=switchLoginMode;
 
 /* Expose for HTML onclick */
 window.switchLoginMode=switchLoginMode;
