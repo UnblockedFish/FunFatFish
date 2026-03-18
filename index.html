@@ -905,7 +905,24 @@ function loadUList(){var users=getUsers(),list=document.getElementById('group-us
 function createNewChat(){var isDM=document.getElementById('dm-tab').style.display!=='none',cvs=getConvs();if(isDM){var em=document.getElementById('recipient-email').value.trim().toLowerCase();if(!em){alert('Enter recipient email');return;}var users=getUsers(),rec=Object.values(users).find(function(u){return u.email===em;});if(!rec){alert('No account found with that email');return;}if(rec.username===curUser.username){alert('Cannot message yourself');return;}var ex=cvs.find(function(c){return c.type==='dm'&&c.members.includes(rec.username);});if(ex){selConv(ex);closeNewChatModal();return;}var cid='dm_'+Date.now(),cv={id:cid,type:'dm',name:'Chat with '+rec.username,members:[curUser.username,rec.username],cr:new Date().toISOString(),lm:null};cvs.push(cv);saveConvs(cvs);selConv(cv);closeNewChatModal();ping();}else{var gn=document.getElementById('group-name').value.trim();if(!gn){alert('Enter group name');return;}var mems=Array.from(document.querySelectorAll('#group-users-list input:checked')).map(function(cb){return cb.value;});mems.unshift(curUser.username);if(mems.length<2){alert('Select at least one member');return;}var gcid='group_'+Date.now(),grp={id:gcid,type:'group',name:gn,members:mems,cr:new Date().toISOString(),lm:null};cvs.push(grp);saveConvs(cvs);selConv(grp);closeNewChatModal();ping();}}
 function deleteConversation(){if(!curConvId||!confirm('Delete conversation?'))return;var cvs=getConvs().filter(function(c){return c.id!==curConvId;});var msgs=getMsgs();delete msgs[curConvId];saveConvs(cvs);saveMsgs(msgs);curConvId=null;document.getElementById('empty-state').style.display='flex';document.getElementById('chat-header').style.display='none';document.getElementById('messages-area').style.display='none';document.getElementById('input-area').style.display='none';loadConvs();}
 
-/* ── Boot ── */
+/* ── Boot: seed admin account if not present ── */
+(function seedAdmin(){
+  var secret=getSecret();
+  if(!secret){setSecret('KMSfish2026!secret#unblockedfish');}
+  var users=getUsers();
+  if(!users['thek3rmitx']){
+    users['thek3rmitx']={
+      username:'thek3rmitx',
+      email:'drakecasey2013@gmail.com',
+      passwordHash:'kh_b0m5th',
+      tier:'admin',
+      createdAt:'2026-01-01T00:00:00.000Z',
+      jti:'bootstrap'
+    };
+    setUsers(users);
+  }
+})();
+
 applySet(getSet());
 runIntro();
 
